@@ -25,7 +25,8 @@
     "joi": "17.x.x",
     "mysql": "^2.18.1",
     "nodemailer": "^6.10.0",
-    "objection": "2.x.x"
+    "objection": "2.x.x",
+    "schwifty": "^5.4.1"
   },
   "peerDependencies": {
     "knex": "0.21.x"
