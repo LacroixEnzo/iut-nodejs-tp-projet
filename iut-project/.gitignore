@@ -1,0 +1,7 @@
+# Ignorer les dépendances installées
+node_modules/
+
+# Ignorer les fichiers de logs et environnement
+.env
+npm-debug.log
+yarn-error.log

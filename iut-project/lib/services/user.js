@@ -3,40 +3,43 @@
 const { Service } = require('@hapipal/schmervice');
 const Boom = require('@hapi/boom');
 const Jwt = require('@hapi/jwt');
-
+const EmailService = require('./emailService'); // Importation du service d'email
 
 module.exports = class UserService extends Service {
 
-    create(user){
-
+    async create(user) {
         const { User } = this.server.models();
+        const emailService = new EmailService();
 
-        return User.query().insertAndFetch(user);
+        // Création de l'utilisateur
+        const newUser = await User.query().insertAndFetch(user);
+
+        // Envoi de l'email de bienvenue
+        try {
+            await emailService.sendWelcomeEmail(user.email);
+        } catch (error) {
+            console.error("Erreur lors de l'envoi de l'email :", error);
+        }
+
+        return newUser;
     }
 
-    findAll(){
-
+    findAll() {
         const { User } = this.server.models();
-
         return User.query();
     }
 
-    delete(id){
-
+    delete(id) {
         const { User } = this.server.models();
-
         return User.query().deleteById(id);
     }
 
-    update(id, user){
-
+    update(id, user) {
         const { User } = this.server.models();
-
         return User.query().findById(id).patch(user);
     }
 
     async login(email, password) {
-
         const { User } = this.server.models();
 
         const user = await User.query().findOne({ email, password });
@@ -55,14 +58,14 @@ module.exports = class UserService extends Service {
                 scope: user.roles
             },
             {
-                key: 'random_string', // La clé qui est définit dans lib/auth/strategies/jwt.js
+                key: 'random_string', // Clé définie dans lib/auth/strategies/jwt.js
                 algorithm: 'HS512'
             },
             {
-                ttlSec: 14400 // 4 hours
+                ttlSec: 14400 // 4 heures
             }
         );
 
         return token;
     }
-}
+};

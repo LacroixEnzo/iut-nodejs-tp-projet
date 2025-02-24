@@ -1,6 +1,6 @@
 'use strict';
 
-const Joi = require('joi')
+const Joi = require('joi');
 
 module.exports = [
     {
@@ -8,34 +8,28 @@ module.exports = [
         path: '/user',
         options: {
             auth: false,
-            tags:['api'],
+            tags: ['api'],
             validate: {
-            payload: Joi.object({
-                firstName: Joi.string().required().min(3).example('John').description('Firstname of the user'),
-                lastName: Joi.string().required().min(3).example('Doe').description('Lastname of the user'),
-                email: Joi.string().required().email().example('john@doe.fr').description('Email of the user'),
-                password: Joi.string().required().example('password').description('Password of the user'),
-                username: Joi.string().required().example('johndoe').description('Username of the user')
-            })
-        }
-    },
+                payload: Joi.object({
+                    firstName: Joi.string().required().min(3).example('John').description('Prénom'),
+                    lastName: Joi.string().required().min(3).example('Doe').description('Nom'),
+                    email: Joi.string().required().email().example('john@doe.fr').description('Email'),
+                    password: Joi.string().required().example('password').description('Mot de passe'),
+                    username: Joi.string().required().example('johndoe').description('Nom d’utilisateur')
+                })
+            }
+        },
         handler: async (request, h) => {
-
             const { userService } = request.services();
-
             return await userService.create(request.payload);
         }
     },
     {
         method: 'get',
         path: '/users',
-        options: {
-            tags:['api']
-        },
+        options: { tags: ['api'] },
         handler: async (request, h) => {
-
             const { userService } = request.services();
-
             return await userService.findAll();
         }
     },
@@ -43,17 +37,11 @@ module.exports = [
         method: 'delete',
         path: '/user/{id}',
         options: {
-            tags:['api'],
-            validate: {
-                params: Joi.object({
-                    id: Joi.number().integer().required().min(1)
-                })
-            }
+            tags: ['api'],
+            validate: { params: Joi.object({ id: Joi.number().integer().required().min(1) }) }
         },
         handler: async (request, h) => {
-
             const { userService } = request.services();
-
             return await userService.delete(request.params.id);
         }
     },
@@ -61,27 +49,21 @@ module.exports = [
         method: 'patch',
         path: '/user/{id}',
         options: {
-            tags:['api'],
-            auth : {
-                scope : ['admin']
-            },
+            tags: ['api'],
+            auth: { scope: ['admin'] },
             validate: {
-                params: Joi.object({
-                    id: Joi.number().integer().required().min(1)
-                }),
+                params: Joi.object({ id: Joi.number().integer().required().min(1) }),
                 payload: Joi.object({
-                    firstName: Joi.string().min(3).example('John').description('Firstname of the user'),
-                    lastName: Joi.string().min(3).example('Doe').description('Lastname of the user'),
-                    email: Joi.string().email().example('john@doe.fr').description('Email of the user'),
-                    password: Joi.string().example('password').description('Password of the user'),
-                    username: Joi.string().example('johndoe').description('Username of the user')
+                    firstName: Joi.string().min(3),
+                    lastName: Joi.string().min(3),
+                    email: Joi.string().email(),
+                    password: Joi.string(),
+                    username: Joi.string()
                 })
             }
         },
         handler: async (request, h) => {
-
             const { userService } = request.services();
-
             return await userService.update(request.params.id, request.payload);
         }
     },
@@ -89,19 +71,17 @@ module.exports = [
         method: 'post',
         path: '/user/login',
         options: {
-            tags:['api'],
+            tags: ['api'],
             auth: false,
             validate: {
                 payload: Joi.object({
-                    email: Joi.string().email().required().example('john@doe.fr').description('Email of the user'),
-                    password: Joi.string().required().example('password').description('Password of the user')
+                    email: Joi.string().email().required(),
+                    password: Joi.string().required()
                 })
             }
         },
         handler: async (request, h) => {
-
             const { userService } = request.services();
-
             return await userService.login(request.payload.email, request.payload.password);
         }
     }
