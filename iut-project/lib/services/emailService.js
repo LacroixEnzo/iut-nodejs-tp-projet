@@ -15,19 +15,19 @@ class EmailService {
         });
     }
 
-    async sendWelcomeEmail(to) {
+    async sendMail(to, subject, text) {
         const mailOptions = {
             from: process.env.SMTP_USER,
             to,
-            subject: 'Bienvenue sur notre plateforme !',
-            text: 'Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nous !'
+            subject,
+            text
         };
 
         try {
             await this.transporter.sendMail(mailOptions);
-            console.log(`Email de bienvenue envoyé à ${to}`);
+            console.log(`Email envoyé à ${to} : ${subject}`);
         } catch (error) {
-            console.error('Erreur lors de l’envoi de l’email :', error);
+            console.error(`Erreur lors de l'envoi de l'email à ${to} :`, error);
         }
     }
 }
