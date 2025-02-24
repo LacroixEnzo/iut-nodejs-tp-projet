@@ -16,18 +16,36 @@ class EmailService {
     }
 
     async sendMail(to, subject, text) {
-        const mailOptions = {
-            from: process.env.SMTP_USER,
-            to,
-            subject,
-            text
-        };
-
         try {
-            await this.transporter.sendMail(mailOptions);
+            await this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to,
+                subject,
+                text
+            });
             console.log(`Email envoyé à ${to} : ${subject}`);
         } catch (error) {
-            console.error(`Erreur lors de l'envoi de l'email à ${to} :`, error);
+            console.error(`Erreur d'envoi d'email à ${to} :`, error);
+        }
+    }
+
+    async sendMailWithAttachment(to, subject, text, filePath) {
+        try {
+            await this.transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to,
+                subject,
+                text,
+                attachments: [
+                    {
+                        filename: 'films.csv',
+                        path: filePath
+                    }
+                ]
+            });
+            console.log(`Email avec CSV envoyé à ${to}`);
+        } catch (error) {
+            console.error(`Erreur envoi CSV à ${to} :`, error);
         }
     }
 }
