@@ -51,9 +51,29 @@ DB_PORT=3307
 PORT=3000
 ```
 
-### 5️⃣ **Lancer le projet**
+### 5️⃣ **Authentification et Permissions**
 
-Et enfin, pour finir et ce toujours au même endroit : 
+L’API utilise un système JWT avec deux rôles :
+
+Utilisateur (user) → Gère ses favoris et consulte les films.
+- Administrateur (admin) → Gère les films et peut exporter les données.
+- Authentification
+Création de compte et connexion via JWT.
+- Ajout du token dans Swagger via le bouton Authorize.
+- Les utilisateurs peuvent être promus en admin (nécessite les droits).
+
+### 6️⃣ **Activer Redis pour l’export CSV**
+L’export CSV fonctionne via une file d’attente Redis.
+
+Lancer Redis avec Docker : 
+```docker run -d --name redis-server -p 6379:6379 redis```
+
+Une fois Redis actif, les admins peuvent demander un export CSV, qui sera envoyé par email automatiquement.
+
+
+### 7️⃣ **Lancer le projet**
+
+Une fois tout configuré, démarrez l’API au même endroit avec :
 
 ```npm start```
 
